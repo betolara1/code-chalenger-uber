@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_TOKEN=7WWbcr7p4u2ZXvFOEmeJcLW3F
+      # Se tiver a chave do TFL também:
+      # - TFL_API_KEY=sua_chave_aqui

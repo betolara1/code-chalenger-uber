@@ -1,0 +1,30 @@
+# --- ESTÁGIO 1: BUILD (Compilação) ---
+# Usamos uma imagem que já tem Maven e Java 21 para compilar o projeto
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+
+WORKDIR /app
+
+# Copia o arquivo de dependências primeiro (para aproveitar o cache do Docker)
+COPY pom.xml .
+# Baixa as dependências (sem copiar o código fonte ainda)
+RUN mvn dependency:go-offline
+
+# Agora copia o código fonte e faz o build
+COPY src ./src
+# Gera o .jar (pula os testes pra ser mais rápido agora)
+RUN mvn clean package -DskipTests
+
+# --- ESTÁGIO 2: RUN (Execução) ---
+# Usamos uma imagem leve (Alpine) só com o JRE para rodar o app
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+# Copia apenas o .jar gerado no estágio anterior
+COPY --from=build /app/target/*.jar app.jar
+
+# Expõe a porta 8080
+EXPOSE 8080
+
+# Comando para iniciar a aplicação
+ENTRYPOINT ["java", "-jar", "app.jar"]
