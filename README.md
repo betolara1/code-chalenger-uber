@@ -1,168 +1,141 @@
 # FilmsLocation 🎬
 
-Uma aplicação Spring Boot que fornece informações sobre locais de filmagem de filmes em San Francisco.
+Uma aplicação Spring Boot robusta para consulta de locais de filmagem em San Francisco, integrando-se com APIs externas e oferecendo documentação completa.
 
-## 📋 Descrição
+## 🎯 Objetivo & Problema
 
-FilmsLocation é uma API REST que permite consultar filmes que foram gravados em San Francisco. A aplicação utiliza OpenFeign para fazer requisições a uma API externa de filmes (SF Films) e expõe endpoints para buscar todos os filmes ou pesquisar por título.
+### O Problema
+Desenvolvedores e entusiastas de cinema muitas vezes têm dificuldade em encontrar localizações exatas onde seus filmes favoritos foram gravados em San Francisco. As informações estão dispersas ou em APIs complexas de consumir diretamente.
 
-## 🛠️ Tecnologias
+### O Objetivo
+Fornecer uma API REST simplificada e performática que centraliza dados de filmagens de San Francisco, permitindo buscas rápidas por título e listagem completa, com tratamento de dados e segurança.
 
-- **Java**: 21
-- **Spring Boot**: 3.5.9
-- **Spring Cloud**: 2025.0.1
-- **Spring Cloud OpenFeign**: Cliente HTTP declarativo
-- **Lombok**: Redução de boilerplate
-- **Maven**: Gerenciador de dependências
-- **Docker**: Containerização
+---
 
-## 📦 Dependências Principais
+## 🏗️ Arquitetura
 
-```xml
-- spring-boot-starter-web
-- spring-cloud-starter-openfeign
-- spring-boot-devtools
-- projectlombok
+A aplicação segue uma arquitetura baseada em **Microservices Ready** utilizando Spring Boot e Spring Cloud:
+
+```mermaid
+graph TD
+    Client[Usuário/Frontend] --> Controller[FilmsController]
+    Controller --> Feign[SfFilms OpenFeign Client]
+    Feign --> ExternalAPI[SFgov Data API]
+    
+    subgraph Spring Boot App
+    Controller
+    Feign
+    DTO[FilmsDTO]
+    end
 ```
 
-## 🚀 Como Executar
+- **Controller Layer**: Expõe os endpoints REST e gerencia a lógica de entrada.
+- **Client Layer (Feign)**: Abstração declarativa para consumo da API externa.
+- **DTO Layer**: Objetos de transferência de dados para garantir desacoplamento.
 
-### Pré-requisitos
+---
 
-- Java 21 instalado
-- Maven instalado (ou usar o `mvnw` incluído)
+## 🚀 Como Rodar
 
-### Localmente
+### Ambiente de Desenvolvimento (Dev)
 
-1. Clone o repositório
-```bash
-git clone <seu-repositorio>
-cd MoviesLocation
-```
+**Pré-requisitos:** Java 21, Maven.
 
-2. Execute a aplicação
-```bash
-./mvnw spring-boot:run
-```
+1. Clone o repositório:
+   ```bash
+   git clone <url-do-repositorio>
+   cd code-chalenger-uber/MoviesLocation
+   ```
+2. Execute a aplicação:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+3. Acesse: `http://localhost:8080`
 
-Ou no Windows:
-```bash
-mvnw.cmd spring-boot:run
-```
+### Ambiente de Produção (com Docker)
 
-3. A aplicação estará disponível em: `http://localhost:8080`
+**Pré-requisitos:** Docker e Docker Compose.
 
-### Com Docker
+1. Na raiz do projeto, execute:
+   ```bash
+   docker-compose up --build
+   ```
+2. A API estará disponível em `http://localhost:8080`.
 
-1. Build da imagem
-```bash
-docker build -t filmslocation .
-```
+---
 
-2. Execute com Docker Compose
-```bash
-docker-compose up
-```
+## 📖 Exemplos de Request/Response
 
-## 🔗 Endpoints
+### Listar Todos os Filmes
+**GET** `/api/films/allFilms`
 
-### GET `/api/films/allFilms`
-Retorna a lista de todos os filmes gravados em San Francisco.
-
-**Exemplo de requisição:**
-```bash
-curl http://localhost:8080/api/films/allFilms
-```
-
-**Resposta:**
+**Response:**
 ```json
 [
   {
-    "id": 1,
-    "title": "Film Title",
-    "location": "Location Name"
+    "title": "180",
+    "locations": "Epic Roasthouse (369 Embarcadero)",
+    "director": "Jayendra",
+    "latitude": 37.7907,
+    "longitude": -122.39
   }
 ]
 ```
 
-### GET `/api/films/search`
-Pesquisa filmes por título.
+### Buscar por Título
+**GET** `/api/films/search?title=Ant-Man`
 
-**Parâmetros:**
-- `title` (query parameter): Título do filme a buscar
-
-**Exemplo de requisição:**
-```bash
-curl http://localhost:8080/api/films/search?title=The%20Room
-```
-
-**Resposta:**
+**Response:**
 ```json
 [
   {
-    "id": 1,
-    "title": "The Room",
-    "location": "Location Name"
+    "title": "Ant-Man",
+    "locations": "Steinhart Aquarium (California Academy of Sciences, Golden Gate Park)",
+    "director": "Peyton Reed",
+    "latitude": 37.7701,
+    "longitude": -122.466
   }
 ]
 ```
 
-## ⚙️ Configuração
+---
 
-As configurações estão no arquivo `application.properties`:
+## 🔍 Swagger & Documentação
 
-```properties
-spring.application.name=FilmsLocation
-app_token=7WWbcr7p4u2ZXvFOEmeJcLW3F
-```
+A documentação interativa da API está disponível via Swagger UI após iniciar a aplicação:
 
-| Propriedade | Descrição |
-|---|---|
-| `spring.application.name` | Nome da aplicação |
-| `app_token` | Token de autenticação para a API externa SF Films |
+🔗 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
-## 📁 Estrutura do Projeto
+![Swagger Documentation](images/swagger.png)
 
-```
-src/main/java/com/films/FilmsLocation/
-├── FilmsLocationApplication.java  # Classe principal
-├── client/
-│   └── SfFilms.java              # Cliente Feign para API externa
-├── controller/
-│   └── FilmsController.java       # Endpoints REST
-└── dto/
-    └── FilmsDTO.java             # Data Transfer Object
-```
+---
 
-## 🔒 Tratamento de Segurança
+## 🐳 Docker
 
-A aplicação trata caracteres especiais (como aspas simples) nas buscas por título para prevenir SQL Injection:
+O projeto está totalmente containerizado. O arquivo `dockerfile` realiza o multi-stage build para otimizar o tamanho da imagem final, e o `docker-compose.yml` gerencia a execução do serviço.
 
-```java
-String treatedTitleString = title.replace("'", "''");
-```
-
-## 📝 Notas de Desenvolvimento
-
-- Use `spring-boot-devtools` para hot reload durante desenvolvimento
-- O projeto segue padrões Spring Boot com separação de responsabilidades (Controller, Client, DTO)
-- Feign é utilizado para simplificar requisições HTTP à API externa
+---
 
 ## 🧪 Testes
 
-Execute os testes com:
+A aplicação conta com uma suíte de testes unitários cobrindo os principais fluxos dos controllers, garantindo a integridade da API e o tratamento correto de parâmetros.
+
+Para rodar os testes:
 ```bash
 ./mvnw test
 ```
 
-## 📄 Licença
-
-Este projeto está sob licença [Adicionar sua licença aqui]
-
-## 👨‍💻 Autor
-
-Desenvolvido como aplicação educacional para integração com APIs externas usando Spring Boot e OpenFeign.
-
 ---
 
-**Versão:** 0.0.1-SNAPSHOT
+## ⚙️ GitHub Actions (CI/CD)
+
+Implementamos um workflow de Integração Contínua que automatiza:
+- **Build**: Compilação do código em cada push/PR.
+- **Testes**: Execução automatizada da suíte de testes.
+- **Lint**: Verificação básica de integridade.
+
+O status pode ser acompanhado na aba **Actions** do repositório.
+
+---
+**Versão:** 0.0.1-SNAPSHOT | Desenvolvido com auxílio de IA para excelência técnica.
+
