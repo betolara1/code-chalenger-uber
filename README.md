@@ -137,5 +137,4 @@ Implementamos um workflow de Integração Contínua que automatiza:
 O status pode ser acompanhado na aba **Actions** do repositório.
 
 ---
-**Versão:** 0.0.1-SNAPSHOT | Desenvolvido com auxílio de IA para excelência técnica.
 
