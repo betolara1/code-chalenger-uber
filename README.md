@@ -1,20 +1,57 @@
-# FilmsLocation 🎬
+<div align="center">
 
-Uma aplicação Spring Boot robusta para consulta de locais de filmagem em San Francisco, integrando-se com APIs externas e oferecendo documentação completa.
+# 🎬 FilmsLocation API
 
-## 🎯 Objetivo & Problema
+### REST API de Consulta de Locais de Filmagem em San Francisco
 
-### O Problema
-Desenvolvedores e entusiastas de cinema muitas vezes têm dificuldade em encontrar localizações exatas onde seus filmes favoritos foram gravados em San Francisco. As informações estão dispersas ou em APIs complexas de consumir diretamente.
+[![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.9-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![OpenFeign](https://img.shields.io/badge/OpenFeign-Cloud-blue?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud-openfeign)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Swagger](https://img.shields.io/badge/Swagger-OpenAPI_3-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://swagger.io/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 
-### O Objetivo
-Fornecer uma API REST simplificada e performática que centraliza dados de filmagens de San Francisco, permitindo buscas rápidas por título e listagem completa, com tratamento de dados e segurança.
+</div>
 
 ---
 
-## 🏗️ Arquitetura
+## 📸 Preview (Swagger UI)
 
-A aplicação segue uma arquitetura baseada em **Microservices Ready** utilizando Spring Boot e Spring Cloud:
+<div align="center">
+  <img src="images/swagger.png" alt="Swagger UI Preview" width="100%">
+</div>
+
+---
+
+## 📌 Sobre o Projeto
+
+A **FilmsLocation API** é uma solução robusta para consulta de locais de filmagem na cidade de San Francisco. A API consome dados diretamente da **SFgov Data API**, processando e disponibilizando endpoints simplificados para que aplicações frontend ou outros serviços possam listar e buscar locações de filmes icônicos.
+
+Construída com foco em **performance e manutenibilidade**, a aplicação incorpora:
+
+- ✅ **Integração Declarativa** com OpenFeign para consumo de APIs externas
+- ✅ **Arquitetura desacoplada** com uso de DTOs
+- ✅ **Documentação interativa** com Swagger / OpenAPI 3
+- ✅ **Containerização completa** com Docker e Docker Compose
+- ✅ **CI/CD Automatizado** via GitHub Actions para build e testes
+- ✅ **Tratamento de dados** para segurança em queries dinâmicas
+- ✅ **Suíte de testes** para controllers e integração
+
+---
+
+## 🏛️ Arquitetura
+
+A aplicação segue uma estrutura modular e limpa:
+
+```
+📦 MoviesLocation
+ ├── 🎮 controller/      # Endpoints REST e lógica de entrada
+ ├── 🔌 client/          # Abstração OpenFeign para APIs externas (SFgov)
+ ├── 📤 dto/             # Objetos de Transferência de Dados (Data Transfer Objects)
+ └── 🧪 test/            # Testes automatizados (JUnit 5 e Mockito)
+```
+
+### Fluxo de Dados
 
 ```mermaid
 graph TD
@@ -29,112 +66,112 @@ graph TD
     end
 ```
 
-- **Controller Layer**: Expõe os endpoints REST e gerencia a lógica de entrada.
-- **Client Layer (Feign)**: Abstração declarativa para consumo da API externa.
-- **DTO Layer**: Objetos de transferência de dados para garantir desacoplamento.
-
 ---
 
-## 🚀 Como Rodar
+## 🚀 Endpoints da API
 
-### Ambiente de Desenvolvimento (Dev)
+### 🎥 Filmes e Locais
+| Método | Endpoint | Descrição | Parâmetros |
+|--------|----------|-----------|------------|
+| `GET` | `/api/films/allFilms` | Lista todas as filmagens e locais | — |
+| `GET` | `/api/films/search` | Busca locais por título do filme | `title` (obrigatório) |
 
-**Pré-requisitos:** Java 21, Maven.
-
-1. Clone o repositório:
-   ```bash
-   git clone <url-do-repositorio>
-   cd code-chalenger-uber/MoviesLocation
-   ```
-2. Execute a aplicação:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-3. Acesse: `http://localhost:8080`
-
-### Ambiente de Produção (com Docker)
-
-**Pré-requisitos:** Docker e Docker Compose.
-
-1. Na raiz do projeto, execute:
-   ```bash
-   docker-compose up --build
-   ```
-2. A API estará disponível em `http://localhost:8080`.
-
----
-
-## 📖 Exemplos de Request/Response
-
-### Listar Todos os Filmes
-**GET** `/api/films/allFilms`
-
-**Response:**
-```json
-[
-  {
-    "title": "180",
-    "locations": "Epic Roasthouse (369 Embarcadero)",
-    "director": "Jayendra",
-    "latitude": 37.7907,
-    "longitude": -122.39
-  }
-]
-```
-
-### Buscar por Título
-**GET** `/api/films/search?title=Ant-Man`
-
-**Response:**
-```json
-[
-  {
-    "title": "Ant-Man",
-    "locations": "Steinhart Aquarium (California Academy of Sciences, Golden Gate Park)",
-    "director": "Peyton Reed",
-    "latitude": 37.7701,
-    "longitude": -122.466
-  }
-]
+**Exemplo de Busca:**
+```bash
+GET /api/films/search?title=Ant-Man
 ```
 
 ---
 
-## 🔍 Swagger & Documentação
+## 🐳 Rodando com Docker
 
-A documentação interativa da API está disponível via Swagger UI após iniciar a aplicação:
+A forma mais simples de subir a aplicação em qualquer ambiente:
 
-🔗 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+**1. Clone o repositório:**
+```bash
+git clone https://github.com/betolara1/code-chalenger-uber.git
+cd code-chalenger-uber
+```
 
-![Swagger Documentation](images/swagger.png)
+**2. Suba o container:**
+```bash
+docker-compose up --build -d
+```
 
----
+**3. Verifique o status:**
+```bash
+docker-compose ps
+```
 
-## 🐳 Docker
-
-O projeto está totalmente containerizado. O arquivo `dockerfile` realiza o multi-stage build para otimizar o tamanho da imagem final, e o `docker-compose.yml` gerencia a execução do serviço.
+A API estará disponível em: `http://localhost:8080`
 
 ---
 
 ## 🧪 Testes
 
-A aplicação conta com uma suíte de testes unitários cobrindo os principais fluxos dos controllers, garantindo a integridade da API e o tratamento correto de parâmetros.
+A API possui uma suíte de testes para garantir a integridade dos endpoints e do fluxo de dados.
 
-Para rodar os testes:
 ```bash
+# Executar todos os testes
 ./mvnw test
+```
+
+Os testes incluem:
+- **FilmsControllerTest**: Validação de endpoints e parâmetros.
+- **Context Loads**: Verificação de inicialização do contexto Spring.
+
+---
+
+## 💻 Rodando Localmente (Desenvolvimento)
+
+**Pré-requisitos:**
+- Java 21
+- Maven 3.9+
+
+```bash
+# Navegue até a pasta do projeto
+cd MoviesLocation
+
+# Execute a aplicação
+./mvnw spring-boot:run
 ```
 
 ---
 
-## ⚙️ GitHub Actions (CI/CD)
+## 📖 Documentação Interativa (Swagger)
 
-Implementamos um workflow de Integração Contínua que automatiza:
-- **Build**: Compilação do código em cada push/PR.
-- **Testes**: Execução automatizada da suíte de testes.
-- **Lint**: Verificação básica de integridade.
+Com a aplicação rodando, acesse a documentação completa:
 
-O status pode ser acompanhado na aba **Actions** do repositório.
+🔗 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ---
 
+## 🛠️ Stack Tecnológica
+
+| Tecnologia | Versão | Finalidade |
+|-----------|--------|------------|
+| Java | 21 (LTS) | Linguagem principal |
+| Spring Boot | 3.5.9 | Framework base |
+| Spring Cloud | 2025.0.1 | Ecossistema Cloud |
+| OpenFeign | — | Consumo de API externa |
+| SpringDoc OpenAPI | 2.8.5 | Documentação Swagger |
+| Lombok | — | Redução de código boilerplate |
+| Docker | — | Containerização |
+| JUnit 5 + Mockito | — | Testes automatizados |
+| GitHub Actions | — | CI/CD |
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por **Beto Lara** — Backend Developer
+
+[![GitHub](https://img.shields.io/badge/GitHub-betolara1-181717?style=for-the-badge&logo=github)](https://github.com/betolara1)
+
+---
+
+<div align="center">
+
+**FilmsLocation API** — Facilitando o acesso a dados cinematográficos de San Francisco.
+
+</div>
